@@ -1,268 +1,839 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trương Khánh Hào | IT Infrastructure Specialist & Team Leader</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Hệ Thống Phân Cấp Tổ Chức và Công Việc</title>
+    <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
+    <!-- Tải Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Thiết lập font Inter -->
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 90%; width: 450px; transform: translateY(-50px); transition: transform 0.3s ease-out;
+        }
+        .modal-backdrop.active .modal-content { transform: translateY(0); }
+        
+        /* Hiệu ứng nhấp nháy cảnh báo */
+        @keyframes blink-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgb(239, 68, 68); border-color: #ef4444; }
+            50% { box-shadow: 0 0 10px 3px rgba(239, 68, 68, 0.8); border-color: #f87171; }
+        }
+        .blink-danger {
+            animation: blink-red 1s infinite;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+<body class="p-4 md:p-8">
 
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <a href="#" class="text-xl font-extrabold text-indigo-600 flex items-center gap-2">
-                    <i class="fa-solid fa-terminal"></i>
-                    <span>KHANH HAO</span>
-                </a>
-                <div class="hidden md:flex space-x-8 font-medium text-sm text-slate-600">
-                    <a href="#about" class="hover:text-indigo-600 transition">Giới Thiệu</a>
-                    <a href="#skills" class="hover:text-indigo-600 transition">Kỹ Năng</a>
-                    <a href="#projects" class="hover:text-indigo-600 transition">Dự Án</a>
-                    <a href="#documents" class="hover:text-indigo-600 transition">Tài Liệu</a>
-                    <a href="#contact" class="hover:text-indigo-600 transition">Liên Hệ</a>
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-10">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-700 mb-4 text-center border-b-4 border-indigo-400 pb-3">
+            Hệ Thống Quản Lý Nhóm Operator 2.0
+        </h1>
+        
+        <!-- Container chính: Chia làm 2 cột -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+
+            <!-- Cột 1: Menu cấp cao & Sơ đồ trực quan (Accordion) -->
+            <div class="md:col-span-2 space-y-4 pr-3">
+                <h2 class="text-xl font-bold text-gray-700 mb-2">
+                    <i class="fa-solid fa-sitemap mr-2"></i> Menu Chức Năng
+                </h2>
+                <div id="group-list" class="space-y-4">
+                    <!-- Nội dung Menu Accordion sẽ được render tại đây -->
                 </div>
-                <div>
-                    <a href="documents/my-cv.pdf" target="_blank" download class="px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-download"></i>
-                        <span>Tải CV</span>
-                    </a>
+            </div>
+
+            <!-- Cột 2: Chi tiết -->
+            <div class="md:col-span-3 bg-blue-50/70 p-6 rounded-xl shadow-inner border border-blue-200 md:min-h-[70vh] md:max-h-[75vh] md:overflow-y-auto">
+                <div id="details-pane">
+                    <!-- Nội dung sẽ được render theo trạng thái -->
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- HERO SECTION -->
-    <header class="py-16 md:py-24 bg-gradient-to-b from-indigo-50/70 to-transparent">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center gap-10 justify-between">
-                
-                <!-- Cột giới thiệu -->
-                <div class="text-center md:text-left md:max-w-xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wider mb-6">
-                        <i class="fa-solid fa-server"></i> IT Infrastructure & Hardware Leader
-                    </div>
-                    <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-                        Trương Khánh Hào <br/>
-                        <span class="text-indigo-600">(張慶豪)</span>
-                    </h1>
-                    <p class="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed">
-                        Chuyên viên quản trị hạ tầng mạng, máy chủ doanh nghiệp và tự động hóa hệ thống. Dẫn dắt đội ngũ vận hành kỹ thuật với tư duy quản lý hiện đại theo phương pháp PDCA & SMART.
-                    </p>
-                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                        <a href="documents/my-cv.pdf" target="_blank" class="px-6 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition shadow-md shadow-indigo-200 flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> Xem CV (PDF)
-                        </a>
-                        <a href="#documents" class="px-6 py-3 rounded-lg bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-folder-open"></i> Thư Viện Biểu Mẫu
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Cột Avatar -->
-                <div class="flex-shrink-0">
-                    <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-full p-2 bg-gradient-to-tr from-indigo-500 to-indigo-200 shadow-xl">
-                        <img 
-                            src="images/avatar.png" 
-                            alt="Trương Khánh Hào" 
-                            class="w-full h-full object-cover rounded-full bg-white"
-                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Truong+Khanh+Hao&background=4f46e5&color=fff&size=256';"
-                        >
-                    </div>
-                </div>
-
+    <!-- START Custom Download Confirmation Modal -->
+    <div id="download-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="text-xl font-bold text-indigo-700 flex items-center">
+                    <i class="fa-solid fa-file-pdf text-red-500 mr-2"></i> Xác Nhận Mở Xem Trước (PDF)
+                </h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
             </div>
-        </div>
-    </header>
-
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-16 border-t border-slate-200 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mx-auto text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Về Bản Thân</h2>
-                <div class="h-1 w-16 bg-indigo-600 mx-auto rounded"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-300 transition">
-                    <div class="w-12 h-12 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-network-wired"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Hạ Tầng & Vận Hành</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        Thiết kế, chuẩn hóa và duy trì mạng doanh nghiệp (Active Directory, WinRM, VLAN, SD-WAN, Switch, Wi-Fi Ruckus), đảm bảo uptime tối đa.
-                    </p>
-                </div>
-                <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition">
-                    <div class="w-12 h-12 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-code"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Tự Động Hóa</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        Xây dựng kịch bản PowerShell tự động nâng cấp Windows 11 âm thầm và triển khai phần mềm hàng loạt trên diện rộng.
-                    </p>
-                </div>
-                <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-300 transition">
-                    <div class="w-12 h-12 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-people-roof"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Quản Lý Đội Ngũ</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        Điều phối đội ngũ kỹ thuật phần cứng, phân chia công việc theo khu vực, huấn luyện nhân sự theo mô hình GROW và kiểm soát SLA ticket.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SKILLS SECTION -->
-    <section id="skills" class="py-16 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mx-auto text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Năng Lực & Kỹ Năng</h2>
-                <div class="h-1 w-16 bg-indigo-600 mx-auto rounded"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-indigo-700 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-server"></i> Hệ Thống & Ảo Hóa
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Windows Server & AD DS</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Group Policy (GPO)</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Proxmox VE & VMware</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Microsoft 365 & Zimbra</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">NAS & File Storage</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-indigo-700 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved"></i> Mạng & Bảo Mật
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Cisco & Ruckus AP</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">RADIUS Access Authentication</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">SSL VPN & JumpServer</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Graylog SIEM Log Server</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-indigo-700 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-bolt"></i> Tự Động Hóa & Giám Sát
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">PowerShell Automation</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">WinRM Remote Deploy</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Grafana Dashboard</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">MySQL & OCS Inventory</span>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-indigo-700 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-cubes"></i> Quản Trị & Web Portal
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">HTML5, Tailwind CSS, JS</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">Node.js & Python</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">PDCA Cycle & SMART Goals</span>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">GROW Coaching Model</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DOCUMENTS SECTION (Kết nối trực tiếp thư mục documents/) -->
-    <section id="documents" class="py-16 bg-white border-t border-slate-200">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mx-auto text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">Tài Liệu & Biểu Mẫu</h2>
-                <p class="text-sm text-slate-500">Các tệp tài liệu và hồ sơ cá nhân có thể tải trực tiếp</p>
-                <div class="h-1 w-16 bg-indigo-600 mx-auto rounded mt-3"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                
-                <!-- File 1: CV PDF -->
-                <div class="p-6 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-2xl flex-shrink-0">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-base">Hồ Sơ Năng Lực (Curriculum Vitae)</h4>
-                            <p class="text-xs text-slate-500 mt-0.5">Định dạng: PDF • Bản mới nhất</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <a href="documents/my-cv.pdf" target="_blank" class="px-3 py-2 text-xs font-semibold rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition">
-                            <i class="fa-solid fa-eye"></i> Xem
-                        </a>
-                        <a href="documents/my-cv.pdf" download class="px-3 py-2 text-xs font-semibold rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition">
-                            <i class="fa-solid fa-download"></i> Tải
-                        </a>
-                    </div>
-                </div>
-
-                <!-- File 2: Biểu mẫu ODT -->
-                <div class="p-6 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
-                            <i class="fa-solid fa-file-lines"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-base">Biểu Mẫu Yêu Cầu IT</h4>
-                            <p class="text-xs text-slate-500 mt-0.5">Định dạng: ODT (OpenDocument Text)</p>
-                        </div>
-                    </div>
-                    <div>
-                        <a href="documents/bieu-mau.odt" download class="px-3 py-2 text-xs font-semibold rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-download"></i> Tải File Gốc
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT SECTION -->
-    <section id="contact" class="py-16 bg-slate-900 text-white">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold mb-4">Thông Tin Liên Hệ</h2>
-            <p class="text-slate-400 mb-8 max-w-xl mx-auto">
-                Sẵn sàng trao đổi về các giải pháp hạ tầng mạng, tự động hóa và quản trị hệ thống.
+            
+            <p class="text-gray-700 mb-4">
+                Bạn đang cố gắng mở file xem trước: <br>
+                <strong id="modal-filename" class="text-blue-700 break-words text-lg"></strong>
             </p>
-            <div class="flex flex-wrap justify-center gap-6 text-sm mb-12">
-                <a href="mailto:edp.hao@pyv.com.vn" class="flex items-center gap-3 px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition border border-slate-700">
-                    <i class="fa-solid fa-envelope text-indigo-400 text-lg"></i>
-                    <span>edp.hao@pyv.com.vn</span>
-                </a>
-                <a href="tel:0898153675" class="flex items-center gap-3 px-5 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition border border-slate-700">
-                    <i class="fa-solid fa-phone text-emerald-400 text-lg"></i>
-                    <span>0898 153 675 (Ext: 7987)</span>
-                </a>
-                <div class="flex items-center gap-3 px-5 py-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
-                    <i class="fa-solid fa-location-dot text-rose-400 text-lg"></i>
-                    <span>TP. Hồ Chí Minh, Việt Nam</span>
-                </div>
-            </div>
-            <p class="text-xs text-slate-500">
-                &copy; 2026 Trương Khánh Hào. All rights reserved. Hosted on GitHub Pages.
+            
+            <p id="modal-notice" class="text-sm text-gray-600 mb-6 p-3 bg-blue-50 rounded-lg border border-blue-300">
+                <i class="fa-solid fa-eye mr-1 text-blue-600"></i> 
+                Lưu ý: File PDF sẽ được mở trong <span class="font-bold">tab mới</span> để bạn xem trước nội dung.
             </p>
-        </div>
-    </section>
 
+            <div class="flex justify-end space-x-3">
+                <button 
+                    onclick="closeModal()" 
+                    class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition duration-200"
+                >
+                    Hủy Bỏ
+                </button>
+                <button 
+                    id="confirm-preview-button"
+                    class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-200 shadow-md"
+                >
+                    Đồng Ý (Mở Xem Trước)
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- END Custom Download Confirmation Modal -->
+
+    <script>
+        // --- LOGIC XỬ LÝ NGÀY THÁNG ---
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+
+        const formatDate = (dateString) => {
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        };
+
+        const isBirthdayTomorrow = (dobString) => {
+            const dob = new Date(dobString);
+            return dob.getMonth() === tomorrow.getMonth() && dob.getDate() === tomorrow.getDate();
+        };
+
+        const isBirthdayNextWeek = (dobString) => {
+            const dob = new Date(dobString);
+            const dobMonth = dob.getMonth();
+            const dobDate = dob.getDate();
+
+            for (let i = 2; i <= 7; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() + i);
+                if (dobMonth === checkDate.getMonth() && dobDate === checkDate.getDate()) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        // --- DỮ LIỆU THÀNH VIÊN THEO NHÓM ---
+        const infraMembersData = {
+            'operator1': {
+                id: 'operator1',
+                name: 'Nhóm Operator 1',
+                color: 'red',
+                members: [
+                    { id: 101, name: 'TRẦN KIM LỤC', title: 'Trưởng nhóm', dob: '1986-12-24', phone: '7271', email: 'edp.kimluc@pyv.com.vn', color: 'red', icon: 'fa-user-tie', isLeader: true, duties: ['Quản lý chung nhóm hệ thống & Quản trị mạng', 'Điều phối công việc hàng ngày.'] },
+                    { id: 102, name: 'HỒ THẾ THƯỢNG', title: 'Quản lý hệ thống', dob: '1974-01-01', phone: '7017', email: 'edp.sys@pyv.com.vn', color: 'orange', icon: 'fa-user', isLeader: false, duties: ['Hỗ trợ kỹ thuật.', 'Bảo trì hệ thống Server.'] },
+                    { id: 104, name: 'ĐÀO ANH DŨNG', title: 'Quản trị mạng', dob: '1970-06-24', phone: '7801', email: 'edp.anhdung@pyv.com.vn', color: 'orange', icon: 'fa-user', isLeader: false, duties: ['Thiết lập Switch & wireless ruckus', 'Add mac trong radius & cấp pccguest ticket.'] },
+                    { id: 105, name: 'GIANG KIẾN SƠN', title: 'Quản lý hệ thống', dob: '1978-10-10', phone: '7803', email: 'edp.gks@pyv.com.vn', color: 'green', icon: 'fa-user', isLeader: false, duties: ['Xây dựng hệ thống máy chủ', 'Phụ trách chuyên án tập đoàn máy chủ'] },
+                    { id: 106, name: 'BIỆN HỮU MINH', title: 'Quản trị mạng', dob: '1984-09-02', phone: '7802', email: 'edp.minh@pyv.com.vn', color: 'yellow', icon: 'fa-user', isLeader: false, duties: ['Phụ trách phòng máy chủ Pouyuen', 'Add mac trong radius & cấp pccguest ticket', 'Phụ trách liên hệ nhà cung ứng đường truyền'] },
+                    { id: 107, name: 'TRẦN QUANG THI', title: 'Quản trị mạng', dob: '1977-08-05', phone: '7800', email: 'edp.tqt@pyv.com.vn', color: 'blue', icon: 'fa-user', isLeader: false, duties: ['Phụ trách quản trị mạng Pouyuen', 'Thiết lập SDWAN khu vực PYV và Quốc Tế'] },
+                    { id: 108, name: 'LÊ CẨM SUNG', title: 'Quản lý hệ thống', dob: '1993-09-22', phone: '7812', email: 'edp.jinsong@pyv.com.vn', color: 'pink', icon: 'fa-user', isLeader: false, duties: ['Quản lý hệ thống Zimbra Mail khu vực Việt Nam', 'Quản lý Cellopoint', 'Phụ trách thiết lập SSL_VPN'] }
+                ]
+            },
+            'operator2': {
+                id: 'operator2',
+                name: 'Nhóm Operator 2',
+                color: 'indigo',
+                members: [
+                    { id: 201, name: 'ĐINH THANH THẾ', title: '', dob: '1984-05-25', phone: '5314', email: 'edp.thanhthe@pyv.com.vn', color: 'red', icon: 'fa-user', isLeader: false, duties: ['Trực tiếp sửa chữa, bảo trì các sự cố phần cứng phát sinh tại khu vực B.', 'Lắp đặt và cấu hình các thiết bị phần cứng mới, di dời thiết bị cho người dùng khu vực B.'] },
+                    { id: 202, name: 'TRỊNH CẨM KHÔN', title: '', dob: '1984-10-23', phone: '5205', email: 'edp.khon@pyv.com.vn', color: 'pink', icon: 'fa-user', isLeader: false, duties: ['Trực tiếp sửa chữa, bảo trì các sự cố phần cứng phát sinh tại khu vực MJ.', 'Lắp đặt và cấu hình các thiết bị phần cứng mới, di dời thiết bị cho người dùng khu vực MJ.'] },
+                    { id: 203, name: 'TRƯƠNG KHÁNH HÀO', title: 'Leader', dob: '1986-10-27', phone: '7987', email: 'edp.hao@pyv.com.vn', color: 'indigo', icon: 'fa-user-tie', isLeader: true, duties: ['Điều phối và quản lý toàn bộ hoạt động nhóm Phần cứng.', 'Chịu trách nhiệm về hiệu suất và chất lượng công việc.'] },
+                    { id: 204, name: 'NGUYỄN QUỐC HUY', title: '', dob: '1983-01-01', phone: '7813', email: 'edp.huy@pyv.com.vn', color: 'blue', icon: 'fa-user', isLeader: false, duties: ['Quản lý, phân công và theo dõi tiến độ các dự án kỹ thuật (ví dụ: nâng cấp hệ thống, triển khai thiết bị mới).', 'Lập kế hoạch, kiểm soát ngân sách và tài nguyên cho từng dự án.', 'Kiểm tra và quản lý tồn kho linh kiện, đảm bảo sẵn sàng cho các dự án và sửa chữa.'] },
+                    { id: 205, name: 'ĐẶNG CHÍ HẢI', title: '', dob: '1988-07-10', phone: '7816', email: 'edp.hai@pyv.com.vn', color: 'green', icon: 'fa-user', isLeader: false, duties: ['Giám sát hiệu suất và trạng thái hoạt động của hệ thống IT qua công cụ Grafana.', 'Định kỳ kiểm tra tính chính xác và cập nhật của CMDB (Cơ sở dữ liệu Quản lý Cấu hình).', 'Lập báo cáo tình trạng hệ thống, đưa ra cảnh báo sớm về các vấn đề tiềm ẩn.'] },
+                    { id: 206, name: 'ĐẶNG NGỌC DUY', title: '', dob: '1993-10-23', phone: '7805', email: 'edp.duy@pyv.com.vn', color: 'orange', icon: 'fa-user', isLeader: false, duties: ['Thực hiện bảo trì định kỳ cả phần cứng và phần mềm máy tính văn phòng.', 'Hỗ trợ người dùng khắc phục sự cố máy tính, mạng cơ bản và ứng dụng văn phòng.', 'Hỗ trợ lắp đặt, di dời thiết bị và cấu hình các phần mềm tiêu chuẩn.'] },
+                    { id: 207, name: 'NGÔ TRƯƠNG THẾ NGỌC', title: '', dob: '1987-10-05', phone: '7814', email: 'edp.thengoc@pyv.com.vn', color: 'yellow', icon: 'fa-user', isLeader: false, duties: ['Tiếp nhận, chẩn đoán và sửa chữa các thiết bị phần cứng hư hỏng (máy tính, máy in, thiết bị mạng) cho toàn công ty.', 'Quản lý, bảo trì và kiểm kê kho công cụ, linh kiện sửa chữa chung.'] }
+                ]
+            },
+            'operator3': {
+                id: 'operator3',
+                name: 'Nhóm Operator 3',
+                color: 'purple',
+                members: [
+                    { id: 301, name: 'NGUYỄN NGỌC THÀNH', title: '', dob: '1979-04-22', phone: '7804', email: 'edp.tonynguyen@pyv.com.vn', color: 'red', icon: 'fa-user', isLeader: false, duties: ['Công việc 1', 'Công việc 2'] },
+                    { id: 302, name: 'PHÒNG SỈU ĐÌNH', title: '', dob: '1983-03-18', phone: '7127', email: 'edp.dinh@pyv.com.vn', color: 'green', icon: 'fa-user', isLeader: false, duties: ['Công việc 1', 'Công việc 2'] },
+                    { id: 303, name: 'LÊ NGỌC GIÀU', title: '', dob: '1986-03-03', phone: '7808', email: 'edp.giau@pyv.com.vn', color: 'blue', icon: 'fa-user', isLeader: false, duties: ['Công việc 1', 'Công việc 2'] },
+                    { id: 304, name: 'TĂNG LỆ THIỀN', title: 'Leader', dob: '1989-04-29', phone: '7272', email: 'edp.thien@pyv.com.vn', color: 'purple', icon: 'fa-user-tie', isLeader: true, duties: ['Quản lý chung O3.', 'Điều phối dự án phần mềm.'] },
+                    { id: 305, name: 'PHÙNG DIÊN TRUNG', title: '', dob: '1985-04-15', phone: '7809', email: 'edp.dientrung@pyv.com.vn', color: 'orange', icon: 'fa-user', isLeader: false, duties: ['Công việc 1', 'Công việc 2'] },
+                    { id: 306, name: 'CHÂU VĨNH TUẤN', title: '', dob: '1983-11-29', phone: '7815', email: 'edp.vinhtuan@pyv.com.vn', color: 'yellow', icon: 'fa-user', isLeader: false, duties: ['Công việc 1', 'Công việc 2'] }
+                ]
+            }
+        };
+
+        const signingProcesses = [
+            { id: 'im_install', name: 'Lắp đặt phần mềm IM miễn phí (Line/ Wechat/ Zalo/ Teams)', form: 'PCG-0413-ISMS-T01《OA 基礎服務申請單》v1.5', formPdfUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.pdf', formOdtUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.odt', process: 'Người tạo đơn → Trưởng phòng (Nếu nhà máy có An ninh sản xuất, ký duyệt đến An ninh sản xuất)' },
+            { id: 'teams_acc', name: 'Dịch vụ Tài khoản Teams (Hủy/ Điều chỉnh)', form: 'PCG-0403-ISMS-T03《套裝軟體移轉申請單》v1.1', formPdfUrl: 'DON XIN/PCG-0403-ISMS-T03_套裝軟體移轉申請單_v1.1.pdf', formOdtUrl: 'DON XIN/PCG-0403-ISMS-T03_套裝軟體移轉申請單_v1.1.odt', process: 'Đơn vị yêu cầu → Người quản lý có thẩm quyền theo BU (PCN/PCM-PCAG/PCM-PCMS/GSCM: Người quản lý có thẩm quyền theo BU; AC: Người quản lý Trung tâm Hành chính)' },
+            { id: 'mail_acc', name: 'Dịch vụ Tài khoản Mail (Thêm/ Sửa/ Xóa/ Gửi ra ngoài/ MailGroup)', form: 'PCG-0413-ISMS-T01《OA 基礎服務申請單》v1.5', formPdfUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.pdf', formOdtUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'usb_access', name: 'Xin cấp quyền sử dụng USB', form: 'PCG-0413-ISMS-T01《OA 基礎服務申請單》v1.5', formPdfUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.pdf', formOdtUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'network_serv', name: 'Dịch vụ Mạng (Internet/ Google Translate/ Khách hàng GUEST/ IoT)', form: 'PCG-0413-ISMS-T01《OA 基礎服務申請單》v1.5 (Trừ kết nối GUEST)', formPdfUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.5.pdf', formOdtUrl: 'DON XIN/PCG-0413-ISMS-T01_OA_基礎服務申請單_v1.1.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'scr_saver', name: 'Miễn chương trình bảo vệ màn hình (Screen Saver)', form: 'Không có', formPdfUrl: null, formOdtUrl: null, process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'sw_transfer', name: 'Di chuyển bản quyền phần mềm (Office/ Rhino/ AutoCAD/ Adobe)', form: 'PCG-0403-ISMS-T03《套裝軟體移轉申請單》v1.1', formPdfUrl: 'DON XIN/PCG-0403-ISMS-T03_套裝軟體移轉申請單_v1.1.pdf', formOdtUrl: 'DON XIN/PCG-0403-ISMS-T03_套裝軟體移轉申請單_v1.1.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'shared_folder', name: 'Thư mục chia sẻ (NAS/ Synology Drive)', form: 'NAS Sử dụng không gian Application Form', formPdfUrl: 'DON XIN/NAS_使用空間申請單.pdf', formOdtUrl: 'DON XIN/NAS_使用空間申請單.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'ftp_serv', name: 'Dịch vụ FTP', form: 'Internet FTP Service Account Application Form', formPdfUrl: 'DON XIN/Internet_FTP_Service帳號申請單.pdf', formOdtUrl: 'DON XIN/Internet_FTP_Service帳號申請單.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'admin_perm', name: 'Xin cấp quyền admin cho PC', form: 'PC Permission Application Form', formPdfUrl: 'DON XIN/PC_Permission_Application_Form.pdf', formOdtUrl: 'DON XIN/PC_Permission_Application_Form.odt', process: 'Đơn vị yêu cầu → An ninh sản xuất → BU IT → OM/ Trưởng phòng nhà máy → AC Infra IT' },
+            { id: 'jump_serv', name: 'Dịch vụ Ứng dụng từ xa (Jump Server)', form: '遠端應用服務申請單', formPdfUrl: 'DON XIN/遠端應用服務申請單.pdf', formOdtUrl: 'DON XIN/遠端應用服務申請單.odt', process: 'Người nộp đơn → Trưởng đơn vị → Người quản lý Infra đích (Theo khu vực: Đài Loan/ Trung Quốc/ Việt Nam/ Indonesia)' },
+            { id: 'ssl_vpn', name: 'Xin cấp tài khoản SSL VPN', form: 'PCG-0414-ISMS-T01 SSLVPN連線申請 v1.9', formPdfUrl: 'DON XIN/PCG-0414-ISMS-T01_SSLVPN連線申請_v1.9.pdf', formOdtUrl: 'DON XIN/PCG-0414-ISMS-T01_SSLVPN連線申請_v1.9.odt', process: 'Đơn vị yêu cầu → OM/ Trưởng phòng Hành chính nhà máy → Người quản lý Infra Tập đoàn (LIN CY.)' },
+            { id: 'host_rental', name: 'Xin thuê máy chủ (Hosting Application)', form: 'PCG-0408-ISMS-T02 Hosting Application Form', formPdfUrl: 'DON XIN/PCG-0408-ISMS-T02_Hosting_Application_Form.pdf', formOdtUrl: 'DON XIN/PCG-0408-ISMS-T02_Hosting_Application_Form.odt', process: 'Người nộp đơn → Người quản lý cấp cao nhất của đơn vị yêu cầu → Người quản lý Infra Việt Nam/Campuchia/Myanmar (ERICC)' }
+        ];
+
+        const freewareLists = [
+            { id: 'prohibited', name: 'Danh Sách Phần Mềm Miễn Phí Bị Cấm', form: '不可使用免費軟體清單-20251001.pdf', formPdfUrl: 'List Software Freeware/不可使用免費軟體清單-20251001.pdf' },
+            { id: 'common', name: 'Danh Sách Phần Mềm Miễn Phí Phổ Biến', form: '常用免費軟體確認清單-20250711_2025-10-01.pdf', formPdfUrl: 'List Software Freeware/常用免費軟體確認清單-20250711_2025-10-01.pdf' },
+            { id: 'dev_iot', name: 'Phần Mềm Miễn Phí cho Phát Triển và IOT', form: '軟體開發與IOT免費軟體確認清單-20250716_2025-10-01.pdf', formPdfUrl: 'List Software Freeware/軟體開發與IOT免費軟体確認清單-20250716_2025-10-01.pdf' },
+        ];
+        
+        let appState = 0; 
+        let infraExpanded = false; 
+        let groupExpanded = false; 
+        let processExpanded = false; 
+        let freewareExpanded = false; 
+        let selectedOperator = null; 
+        let selectedMemberId = null;
+        let selectedProcessId = null;
+        let selectedFreewareId = null; 
+
+        const groupListElement = document.getElementById('group-list');
+        const detailsPaneElement = document.getElementById('details-pane');
+        const modalElement = document.getElementById('download-modal');
+        const modalFilenameElement = document.getElementById('modal-filename');
+        const confirmPreviewButton = document.getElementById('confirm-preview-button');
+        const modalNoticeElement = document.getElementById('modal-notice'); 
+        
+        let currentPreviewUrl = ''; 
+
+        window.showConfirmationModal = (url, filename, isOdtPair = true) => {
+            currentPreviewUrl = url;
+            modalFilenameElement.textContent = filename;
+            if (isOdtPair) {
+                modalNoticeElement.innerHTML = `
+                    <i class="fa-solid fa-eye mr-1 text-blue-600"></i> 
+                    Lưu ý: File PDF sẽ được mở trong <span class="font-bold">tab mới</span> để bạn xem trước nội dung. Sau khi xem xong, bạn có thể trở lại trang này để tải xuống file gốc (<code class="font-mono text-xs">.ODT</code>).
+                `;
+            } else {
+                 modalNoticeElement.innerHTML = `
+                    <i class="fa-solid fa-eye mr-1 text-blue-600"></i> 
+                    Lưu ý: File PDF sẽ được mở trong <span class="font-bold">tab mới</span> để bạn xem trước hoặc tải xuống.
+                `;
+            }
+            confirmPreviewButton.onclick = confirmPreview; 
+            modalElement.classList.add('active');
+        };
+
+        window.closeModal = () => {
+            modalElement.classList.remove('active');
+            currentPreviewUrl = ''; 
+        };
+
+        function confirmPreview() {
+            if (currentPreviewUrl) {
+                window.open(currentPreviewUrl, '_blank'); 
+            }
+            closeModal();
+        }
+
+        window.downloadOdtFile = (url) => {
+             window.open(url, '_blank');
+        };
+
+        window.toggleMenuExpansion = (menuType) => {
+            if (menuType === 'infra') {
+                infraExpanded = !infraExpanded;
+                if (infraExpanded) { 
+                    groupExpanded = false; 
+                    processExpanded = false; 
+                    freewareExpanded = false;
+                    appState = 1; 
+                    selectedOperator = 'operator1'; 
+                } else {
+                    appState = 0;
+                }
+            } else if (menuType === 'group') {
+                groupExpanded = !groupExpanded;
+                if (groupExpanded) { 
+                    infraExpanded = false;
+                    processExpanded = false; 
+                    freewareExpanded = false;
+                    appState = 1; 
+                    selectedOperator = 'operator2'; 
+                } else {
+                    appState = 0;
+                }
+            } else if (menuType === 'process') {
+                processExpanded = !processExpanded;
+                if (processExpanded) { 
+                    infraExpanded = false;
+                    groupExpanded = false; 
+                    freewareExpanded = false; 
+                    appState = 3; 
+                } else { 
+                    appState = 0; 
+                }
+            } else if (menuType === 'freeware') { 
+                freewareExpanded = !freewareExpanded;
+                if (freewareExpanded) { 
+                    infraExpanded = false;
+                    groupExpanded = false; 
+                    processExpanded = false; 
+                    appState = 5; 
+                } else { 
+                    appState = 0; 
+                }
+            }
+            renderLeftPane();
+            renderRightPane();
+        };
+
+        window.displayOperatorMemberList = (operatorId) => {
+            appState = 1; 
+            selectedOperator = operatorId;
+            renderLeftPane(); 
+            renderRightPane(); 
+        };
+        
+        window.displayMemberDetails = (memberId) => {
+            appState = 2;
+            selectedMemberId = memberId;
+            renderRightPane();
+        };
+        
+        window.displayProcessDetails = (processId) => {
+            appState = 4;
+            selectedProcessId = processId;
+            renderRightPane();
+        };
+
+        window.displayFreewareDetails = (freewareId) => {
+            appState = 6;
+            selectedFreewareId = freewareId;
+            renderRightPane();
+        };
+        
+        function renderHierarchyVisual() {
+            const op2Group = infraMembersData.operator2;
+            const leader = op2Group.members.find(m => m.isLeader);
+            const members = op2Group.members.filter(m => !m.isLeader);
+
+            if (!leader) return '';
+
+            const leaderBox = `
+                <div class="w-full text-center mb-4 member-box">
+                    <div class="p-3 bg-indigo-200 text-indigo-900 font-bold rounded-xl shadow-lg border-2 border-indigo-400 transition transform hover:scale-[1.02] cursor-pointer"
+                        onclick="displayMemberDetails(${leader.id})"
+                    >
+                        <i class="fa-solid ${leader.icon} mr-1"></i> ${leader.name} <span class="text-sm font-medium">(${leader.title})</span>
+                    </div>
+                </div>
+            `;
+
+            const memberBoxes = members.map(person => `
+                <div class="text-center transition transform hover:scale-[1.05] cursor-pointer"
+                    onclick="displayMemberDetails(${person.id})"
+                >
+                    <div class="p-2 text-xs font-semibold rounded-lg bg-white shadow-md border border-gray-300 hover:border-indigo-500 text-gray-700">
+                        <i class="fa-solid ${person.icon} text-indigo-600 mr-1"></i> ${person.name}
+                        <p class="text-[10px] text-gray-500 mt-0.5">${person.title || 'Thành viên'}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="org-chart mt-3 p-4 bg-gray-50 rounded-xl shadow-inner border border-gray-200">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-code-branch mr-2"></i> Cấu Trúc Phân Cấp Nhóm 2
+                    </h3>
+                    <div class="flex flex-col items-center">
+                        ${leaderBox}
+                        <div class="w-0.5 h-6 bg-gray-400"></div>
+                        <div class="w-full h-0.5 bg-gray-400"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 w-full pt-4">
+                            ${memberBoxes}
+                        </div>
+                    </div>
+                    
+                    <button onclick="displayOperatorMemberList('operator2')" class="w-full mt-4 text-center py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-200 shadow-lg">
+                        <i class="fa-solid fa-table-list mr-2"></i> Xem Danh Sách Thành Viên (O2)
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderInfraSubMenu() {
+            let listItems = '';
+            for (const key in infraMembersData) {
+                const group = infraMembersData[key];
+                const isSelected = selectedOperator === key;
+                const hasNextWeekBirthday = group.members.some(member => isBirthdayNextWeek(member.dob));
+                
+                let itemClasses = 'pl-4 py-2 hover:bg-blue-100/80 cursor-pointer rounded-lg border-l-2 border-transparent transition duration-150 flex justify-between items-center';
+                let noticeIcon = '';
+
+                if (isSelected) {
+                    itemClasses = 'pl-4 py-2 bg-blue-100 cursor-pointer rounded-lg border-l-4 border-blue-600 shadow-inner font-bold flex justify-between items-center';
+                } else if (hasNextWeekBirthday) {
+                    itemClasses = 'pl-4 py-2 hover:bg-yellow-50 cursor-pointer rounded-lg border-l-2 border-yellow-500 transition duration-150 flex justify-between items-center';
+                    noticeIcon = '<i class="fa-solid fa-bell text-yellow-500 animate-pulse text-xs"></i>';
+                }
+
+                listItems += `
+                    <li class="${itemClasses}" onclick="displayOperatorMemberList('${key}')">
+                        <span class="text-sm font-medium text-gray-700 flex items-center">
+                            <i class="fa-solid fa-user-group text-indigo-600 mr-2 text-sm"></i>
+                            ${group.name}
+                        </span>
+                        ${noticeIcon}
+                    </li>
+                `;
+            }
+
+            return `
+                <div class="infra-list mt-3 p-4 bg-blue-50 rounded-xl shadow-inner border border-blue-200">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-users mr-2"></i> Các Nhóm Operator
+                    </h3>
+                    <ul class="list-none space-y-1">
+                        ${listItems}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderProcessSubMenu() {
+            const listItems = signingProcesses.map(p => `
+                <li class="pl-4 py-2 hover:bg-blue-100/80 cursor-pointer rounded-lg border-l-2 border-transparent hover:border-blue-500 transition duration-150"
+                    onclick="displayProcessDetails('${p.id}')">
+                    <i class="fa-solid fa-file-signature text-blue-600 mr-2 text-sm"></i>
+                    <span class="text-sm font-medium text-gray-700">${p.name}</span>
+                </li>
+            `).join('');
+
+            return `
+                <div class="process-list mt-3 p-4 bg-blue-50 rounded-xl shadow-inner border border-blue-200">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-list-check mr-2"></i> Chi Tiết Lưu Trình
+                    </h3>
+                    <ul class="list-none space-y-1">
+                        ${listItems}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderFreewareSubMenu() {
+            const listItems = freewareLists.map(f => `
+                <li class="pl-4 py-2 hover:bg-teal-100/80 cursor-pointer rounded-lg border-l-2 border-transparent hover:border-teal-500 transition duration-150"
+                    onclick="displayFreewareDetails('${f.id}')">
+                    <i class="fa-solid fa-file-pdf text-teal-600 mr-2 text-sm"></i>
+                    <span class="text-sm font-medium text-gray-700">${f.name}</span>
+                </li>
+            `).join('');
+
+            return `
+                <div class="freeware-list mt-3 p-4 bg-teal-50 rounded-xl shadow-inner border border-teal-200">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3 border-b pb-2 flex items-center">
+                        <i class="fa-solid fa-file-lines mr-2"></i> Các Tài Liệu
+                    </h3>
+                    <ul class="list-none space-y-1">
+                        ${listItems}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderLeftPane() {
+            let contentHtml = '';
+
+            const hasBirthdayTomorrow = Object.values(infraMembersData).some(group => 
+                group.members.some(member => isBirthdayTomorrow(member.dob))
+            );
+
+            // 1. Menu Infra Team Member
+            const infraCardClasses = infraExpanded
+                ? 'border-red-600 bg-red-100 shadow-lg ring-2 ring-red-500'
+                : 'border-gray-200 bg-white hover:border-red-400 hover:shadow-md';
+            const infraIcon = infraExpanded ? 'fa-folder-open' : 'fa-folder';
+            const infraChevron = infraExpanded ? 'fa-chevron-down' : 'fa-chevron-right';
+            const infraWarningClass = hasBirthdayTomorrow ? 'blink-danger' : '';
+
+            contentHtml += `
+                <div 
+                    class="p-4 rounded-xl border-l-4 cursor-pointer transition duration-300 ease-in-out flex items-center space-x-4 ${infraCardClasses} ${infraWarningClass}"
+                    onclick="toggleMenuExpansion('infra')"
+                >
+                    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center text-xl text-red-700">
+                        <i class="fa-solid ${infraIcon}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-bold text-red-800">Infra Team Member</h3>
+                        <p class="text-sm font-medium text-gray-600">Danh sách thành viên các nhóm Operator</p>
+                    </div>
+                    <i class="fa-solid ${infraChevron} text-gray-500 transition-transform duration-300"></i>
+                </div>
+            `;
+            if (infraExpanded) contentHtml += renderInfraSubMenu();
+
+            // 2. Menu Operator 2
+            const groupCardClasses = groupExpanded
+                ? 'border-indigo-600 bg-indigo-100 shadow-lg ring-2 ring-indigo-500'
+                : 'border-gray-200 bg-white hover:border-indigo-400 hover:shadow-md';
+            const groupIcon = groupExpanded ? 'fa-folder-open' : 'fa-folder';
+            const groupChevron = groupExpanded ? 'fa-chevron-down' : 'fa-chevron-right';
+
+            contentHtml += `
+                <div 
+                    class="p-4 rounded-xl border-l-4 cursor-pointer transition duration-300 ease-in-out flex items-center space-x-4 ${groupCardClasses}"
+                    onclick="toggleMenuExpansion('group')"
+                >
+                    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center text-xl text-indigo-700">
+                        <i class="fa-solid ${groupIcon}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-bold text-indigo-800">Các Thành Viên nhóm Operator 2</h3>
+                        <p class="text-sm font-medium text-gray-600">Sơ Đồ Tổ Chức & Công Việc Chính</p>
+                    </div>
+                    <i class="fa-solid ${groupChevron} text-gray-500 transition-transform duration-300"></i>
+                </div>
+            `;
+            if (groupExpanded) contentHtml += renderHierarchyVisual();
+
+            // 3. Menu Lưu Trình Ký Duyệt
+            const processCardClasses = processExpanded
+                ? 'border-blue-600 bg-blue-100 shadow-lg ring-2 ring-blue-500'
+                : 'border-gray-200 bg-white hover:border-blue-400 hover:shadow-md';
+            const processIcon = processExpanded ? 'fa-layer-group' : 'fa-list-ol';
+            const processChevron = processExpanded ? 'fa-chevron-down' : 'fa-chevron-right';
+
+            contentHtml += `
+                <div 
+                    class="p-4 rounded-xl border-l-4 cursor-pointer transition duration-300 ease-in-out flex items-center space-x-4 ${processCardClasses}"
+                    onclick="toggleMenuExpansion('process')"
+                >
+                    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center text-xl text-blue-700">
+                        <i class="fa-solid ${processIcon}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-bold text-blue-800">Lưu Trình Ký Duyệt (H/W & OA)</h3>
+                        <p class="text-sm font-medium text-gray-600">Quy trình xin các dịch vụ IT cơ bản</p>
+                    </div>
+                    <i class="fa-solid ${processChevron} text-gray-500 transition-transform duration-300"></i>
+                </div>
+            `;
+            if (processExpanded) contentHtml += renderProcessSubMenu();
+
+            // 4. Menu Freeware
+            const freewareCardClasses = freewareExpanded
+                ? 'border-teal-600 bg-teal-100 shadow-lg ring-2 ring-teal-500'
+                : 'border-gray-200 bg-white hover:border-teal-400 hover:shadow-md';
+            const freewareIcon = freewareExpanded ? 'fa-code' : 'fa-puzzle-piece';
+            const freewareChevron = freewareExpanded ? 'fa-chevron-down' : 'fa-chevron-right';
+
+            contentHtml += `
+                <div 
+                    class="p-4 rounded-xl border-l-4 cursor-pointer transition duration-300 ease-in-out flex items-center space-x-4 ${freewareCardClasses}"
+                    onclick="toggleMenuExpansion('freeware')"
+                >
+                    <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center text-xl text-teal-700">
+                        <i class="fa-solid ${freewareIcon}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-bold text-teal-800">List Software Freeware</h3>
+                        <p class="text-sm font-medium text-gray-600">Các quy định về phần mềm miễn phí</p>
+                    </div>
+                    <i class="fa-solid ${freewareChevron} text-gray-500 transition-transform duration-300"></i>
+                </div>
+            `;
+            if (freewareExpanded) contentHtml += renderFreewareSubMenu();
+
+            groupListElement.innerHTML = contentHtml;
+        }
+
+        function renderOperatorMemberList() {
+            if (!selectedOperator || !infraMembersData[selectedOperator]) {
+                detailsPaneElement.innerHTML = '<p class="text-gray-500 italic">Vui lòng chọn một nhóm Operator.</p>';
+                return;
+            }
+            
+            const group = infraMembersData[selectedOperator];
+            const leader = group.members.find(m => m.isLeader);
+            const members = group.members.filter(m => !m.isLeader);
+            const sortedMembers = [leader, ...members].filter(Boolean);
+            
+            let membersListHtml = `
+                <h3 class="text-2xl font-bold text-indigo-700 mb-6 border-b pb-2">
+                    <i class="fa-solid fa-users-viewfinder mr-2"></i> Danh Sách Thành Viên ${group.name}
+                </h3>
+                <div class="space-y-4">
+            `;
+
+            sortedMembers.forEach(person => {
+                const isLeaderClass = person.isLeader ? 'ring-2 ring-offset-2 ring-indigo-500' : '';
+                const birthdayTomorrow = isBirthdayTomorrow(person.dob);
+                const birthdayNextWeek = isBirthdayNextWeek(person.dob);
+
+                let warningBanner = '';
+                if (birthdayTomorrow) {
+                    warningBanner = `<span class="ml-2 text-xl animate-bounce">🎂</span><span class="ml-2 px-2 py-0.5 bg-red-600 text-white text-xs font-bold rounded-full">SINH NHẬT NGÀY MAI!</span>`;
+                } else if (birthdayNextWeek) {
+                    warningBanner = `<span class="ml-2 px-2 py-0.5 bg-yellow-400 text-gray-800 text-xs font-bold rounded-full"><i class="fa-solid fa-calendar-alt mr-1"></i> SN Trong tuần</span>`;
+                }
+
+                membersListHtml += `
+                    <div 
+                        class="p-4 rounded-lg border-l-4 border-indigo-500 cursor-pointer transition duration-200 ease-in-out bg-white shadow-md hover:shadow-xl ${isLeaderClass}"
+                        onclick="displayMemberDetails(${person.id})"
+                    >
+                        <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                            <i class="fa-solid ${person.isLeader ? 'fa-user-tie' : person.icon} text-indigo-600 mr-2 text-base"></i>
+                            ${person.name} ${warningBanner}
+                        </h4>
+                        <p class="text-sm font-medium text-indigo-700 mb-2">${person.title || 'Thành viên'}</p>
+                        <div class="space-y-0.5 text-xs text-gray-500">
+                            <p class="flex items-center"><i class="fa-solid fa-calendar-day mr-2 text-xs"></i> <span class="font-bold">DOB:</span> ${formatDate(person.dob)}</p>
+                            <p class="flex items-center"><i class="fa-solid fa-phone-volume mr-2 text-xs"></i> SĐT: ${person.phone}</p>
+                            <p class="flex items-center"><i class="fa-solid fa-envelope mr-2 text-xs"></i> Email: ${person.email}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            membersListHtml += `</div>`;
+            detailsPaneElement.innerHTML = membersListHtml;
+        }
+
+        function renderRightPane() {
+            detailsPaneElement.innerHTML = '';
+            
+            if (appState === 0) {
+                 detailsPaneElement.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="flex justify-center">
+                            <img
+                                src="Picture/PDCA_SMART.png" 
+                                alt="Sơ đồ IT Infra Team"
+                                class="w-full max-w-xl h-auto object-contain rounded-lg shadow-xl border-2 border-indigo-300"
+                                onerror="this.onerror=null; this.src='https://placehold.co/600x400/indigo/white?text=IT+Infra+Team+Portal';"
+                            >
+                        </div>
+                    </div>
+                `;
+            } else if (appState === 1) {
+                renderOperatorMemberList();
+            } else if (appState === 2) {
+                let person = null;
+                let currentOperatorId = selectedOperator;
+                
+                for (const key in infraMembersData) {
+                    const foundMember = infraMembersData[key].members.find(m => m.id === selectedMemberId);
+                    if (foundMember) {
+                        person = foundMember;
+                        currentOperatorId = key;
+                        break;
+                    }
+                }
+                
+                if (!person) {
+                    detailsPaneElement.innerHTML = '<p class="text-gray-500 italic">Không tìm thấy thông tin thành viên.</p>';
+                    return;
+                }
+                
+                detailsPaneElement.innerHTML = `
+                    <button onclick="displayOperatorMemberList('${currentOperatorId}')" class="mb-4 text-indigo-600 hover:text-indigo-800 font-semibold transition duration-200 flex items-center p-2 rounded-lg bg-white shadow-sm hover:shadow-md">
+                        <i class="fa-solid fa-chevron-left mr-2 text-sm"></i> Quay lại Danh sách thành viên
+                    </button>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-2xl border-l-4 border-indigo-500">
+                        <div class="flex items-center space-x-4 mb-4 pb-4 border-b">
+                            <div class="w-16 h-16 bg-indigo-100 text-indigo-800 rounded-full flex items-center justify-center text-3xl shadow-inner">
+                                <i class="fa-solid ${person.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-extrabold text-indigo-800">${person.name}</h3>
+                                <p class="text-xl font-semibold text-gray-600">${person.title || 'Thành viên'} ${person.isLeader ? '<span class="ml-2 px-3 py-0.5 bg-indigo-600 text-white text-sm font-bold rounded-full shadow-md">TRƯỞNG NHÓM</span>' : ''}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-6 space-y-2 text-gray-700">
+                            <p class="flex items-center font-medium"><i class="fa-solid fa-calendar-day mr-3 text-indigo-600"></i> <span class="font-bold">DOB:</span> ${formatDate(person.dob)}</p>
+                            <p class="flex items-center font-medium"><i class="fa-solid fa-phone-volume mr-3 text-indigo-600"></i> <span class="font-bold">SĐT Nội bộ:</span> ${person.phone}</p>
+                            <p class="flex items-center font-medium"><i class="fa-solid fa-envelope mr-3 text-indigo-600"></i> <span class="font-bold">Email:</span> ${person.email}</p>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <h4 class="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                                <i class="fa-solid fa-clipboard-check mr-2 text-green-600"></i> Công Việc Chính & Trách Nhiệm
+                            </h4>
+                            <ul class="space-y-3 pl-0">
+                                ${person.duties.map((duty, index) => `
+                                    <li class="flex items-start text-gray-700 border-l-4 border-green-300 pl-3 py-1 bg-green-50 rounded-r-lg shadow-sm">
+                                        <span class="font-bold text-green-700 mr-2 flex-shrink-0">${index + 1}.</span>
+                                        <span class="text-base">${duty}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else if (appState === 3) {
+                detailsPaneElement.innerHTML = `
+                    <h3 class="text-2xl font-bold text-blue-700 mb-6 border-b pb-2">
+                        <i class="fa-solid fa-layer-group mr-2"></i> Chi Tiết Lưu Trình Ký Duyệt
+                    </h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-700 p-3 bg-blue-100 rounded-lg border border-blue-300 font-medium">
+                            <i class="fa-solid fa-info-circle mr-2 text-blue-600"></i>
+                            Vui lòng chọn một mục để xem Lưu trình Ký duyệt chi tiết và tải xuống biểu mẫu.
+                        </p>
+                        ${signingProcesses.map(p => `
+                            <div class="p-4 bg-white rounded-lg shadow-md border-l-4 border-blue-400 hover:border-blue-600 transition cursor-pointer" onclick="displayProcessDetails('${p.id}')">
+                                <h4 class="text-lg font-bold text-gray-800">${p.name}</h4>
+                                <p class="text-sm text-gray-600 mt-1">Biểu mẫu: <span class="font-semibold text-indigo-600">${p.form}</span></p>
+                                <p class="text-xs text-blue-500 font-semibold mt-2 flex items-center">
+                                    Xem chi tiết Lưu trình <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (appState === 4) {
+                renderProcessDetails();
+            } else if (appState === 5) {
+                detailsPaneElement.innerHTML = `
+                    <h3 class="text-2xl font-bold text-teal-700 mb-6 border-b pb-2">
+                        <i class="fa-solid fa-puzzle-piece mr-2"></i> List Software Freeware
+                    </h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-700 p-3 bg-teal-100 rounded-lg border border-teal-300 font-medium">
+                            <i class="fa-solid fa-info-circle mr-2 text-teal-600"></i>
+                            Vui lòng chọn một tài liệu dưới đây để xem chi tiết về quy định sử dụng phần mềm miễn phí.
+                        </p>
+                        ${freewareLists.map(f => `
+                            <div class="p-4 bg-white rounded-lg shadow-md border-l-4 border-teal-400 hover:border-teal-600 transition cursor-pointer" onclick="displayFreewareDetails('${f.id}')">
+                                <h4 class="text-lg font-bold text-gray-800">${f.name}</h4>
+                                <p class="text-sm text-gray-600 mt-1">File gốc: <span class="font-semibold text-indigo-600">${f.form}</span></p>
+                                <p class="text-xs text-teal-500 font-semibold mt-2 flex items-center">
+                                    Xem Tài liệu PDF <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (appState === 6) {
+                renderFreewareDetails();
+            }
+        }
+        
+        function renderProcessDetails() {
+            const process = signingProcesses.find(p => p.id === selectedProcessId);
+            if (!process) {
+                detailsPaneElement.innerHTML = '<p class="text-gray-500 italic">Không tìm thấy thông tin quy trình.</p>';
+                return;
+            }
+            
+            const hasForm = process.formPdfUrl && process.formOdtUrl;
+            let formActionButtons = hasForm ? `
+                <div class="flex flex-col space-y-3 mt-4">
+                    <button onclick="showConfirmationModal('${process.formPdfUrl}', '${process.form}', true)" 
+                            class="w-full text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow-md flex items-center justify-center py-3 px-4 rounded-lg">
+                        <i class="fa-solid fa-eye mr-3"></i> 1. Xem trước Biểu mẫu (PDF)
+                    </button>
+                    <button onclick="downloadOdtFile('${process.formOdtUrl}')" 
+                            class="w-full text-lg font-bold text-gray-800 bg-yellow-400 hover:bg-yellow-500 transition duration-200 shadow-md flex items-center justify-center py-3 px-4 rounded-lg">
+                        <i class="fa-solid fa-download mr-3"></i> 2. Tải xuống File Gốc (.ODT)
+                    </button>
+                </div>
+            ` : `<p class="text-lg font-bold text-gray-600 italic">Không yêu cầu biểu mẫu đi kèm.</p>`;
+
+            detailsPaneElement.innerHTML = `
+                <button onclick="appState = 3; renderRightPane();" class="mb-6 text-blue-600 hover:text-blue-800 font-semibold transition duration-200 flex items-center p-2 rounded-lg bg-white shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-chevron-left mr-2 text-sm"></i> Quay lại Danh sách Lưu trình
+                </button>
+
+                <div class="mb-6 pb-3 border-b-2 border-blue-400">
+                    <p class="text-3xl font-extrabold text-blue-800 flex items-center">
+                        <i class="fa-solid fa-scroll mr-3"></i> ${process.name}
+                    </p>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="p-4 bg-white rounded-xl shadow-lg border-l-4 border-indigo-500">
+                        <h4 class="text-xl font-bold text-indigo-700 mb-3 flex items-center"><i class="fa-solid fa-file-invoice mr-2"></i> Biểu Mẫu Cần Sử Dụng: ${process.form}</h4>
+                        ${formActionButtons}
+                    </div>
+
+                    <div class="p-4 bg-white rounded-xl shadow-lg border-l-4 border-green-500">
+                        <h4 class="text-xl font-bold text-green-700 mb-3 flex items-center"><i class="fa-solid fa-arrow-right-arrow-left mr-2"></i> Lưu Trình Ký Duyệt</h4>
+                        <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-lg font-bold text-green-800">${process.process}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFreewareDetails() {
+            const freeware = freewareLists.find(f => f.id === selectedFreewareId);
+            if (!freeware) {
+                detailsPaneElement.innerHTML = '<p class="text-gray-500 italic">Không tìm thấy thông tin tài liệu.</p>';
+                return;
+            }
+
+            detailsPaneElement.innerHTML = `
+                <button onclick="appState = 5; renderRightPane();" class="mb-6 text-teal-600 hover:text-teal-800 font-semibold transition duration-200 flex items-center p-2 rounded-lg bg-white shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-chevron-left mr-2 text-sm"></i> Quay lại Danh sách Freeware
+                </button>
+
+                <div class="mb-6 pb-3 border-b-2 border-teal-400">
+                    <p class="text-3xl font-extrabold text-teal-800 flex items-center">
+                        <i class="fa-solid fa-list-ul mr-3"></i> ${freeware.name}
+                    </p>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="p-4 bg-white rounded-xl shadow-lg border-l-4 border-indigo-500">
+                        <h4 class="text-xl font-bold text-indigo-700 mb-3 flex items-center"><i class="fa-solid fa-file-invoice mr-2"></i> Tên Tài Liệu: ${freeware.form}</h4>
+                        <div class="flex flex-col space-y-3 mt-4">
+                            <button onclick="showConfirmationModal('${freeware.formPdfUrl}', '${freeware.form}', false)" 
+                                    class="w-full text-lg font-bold text-white bg-teal-600 hover:bg-teal-700 transition duration-200 shadow-md flex items-center justify-center py-3 px-4 rounded-lg">
+                                <i class="fa-solid fa-file-pdf mr-3"></i> Xem hoặc Tải xuống Tài Liệu (PDF)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.onload = function() {
+            infraExpanded = true;
+            selectedOperator = 'operator1';
+            appState = 1;
+            renderLeftPane();
+            renderRightPane();
+        }
+    </script>
 </body>
 </html>
